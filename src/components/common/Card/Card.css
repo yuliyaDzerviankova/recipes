@@ -1,0 +1,18 @@
+.responsive-link {
+  min-width: "300px";
+  display: "flex";
+  flex-direction: "column";
+  flex: "1 1";
+}
+
+@media (max-width: 768px) and (min-width: 320px) {
+  .responsive-link {
+    width: 280px;
+  }
+}
+
+@media (min-width: 769px) {
+  .responsive-link {
+    width: 350px;
+  }
+}
