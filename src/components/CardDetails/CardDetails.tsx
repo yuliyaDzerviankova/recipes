@@ -1,86 +1,148 @@
 import { NavLink, useParams } from "react-router-dom"
 import type { Product } from "../../models"
-import { Flex, Text, Image, List, Heading, Spinner, Button, Box, Tag } from "@chakra-ui/react"
+import { Flex, Text, Image, List, Heading, Spinner, Button, Box, Tag, Grid, GridItem, Stack, Badge } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-import { BsArrowLeft } from "react-icons/bs"
+import { BsArrowLeft, BsBook, BsClock } from "react-icons/bs"
 
-type Props = {
-}
+type Props = {}
 
 const CardDetails = ({}: Props) => {
   const { id } = useParams()
   const [loading, setLoading] = useState(false)
   const [product, setProduct] = useState<Product>()
 
-    useEffect(() => {
-      const getProduct = async () => {
-        try {
-          setLoading(true)
-          const response = await fetch(`https://dummyjson.com/recipes/${id}`)
-          if (!response.ok) throw new Error("Failed to fetch")
-  
-          const data = await response.json()
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`https://dummyjson.com/recipes/${id}`)
+        if (!response.ok) throw new Error("Failed to fetch")
 
-          setProduct(data)
-        } catch (err) {
-          console.log(err)
-          
-          return err
-        } finally {
-          setLoading(false)
-        }
+        const data = await response.json()
+
+        setProduct(data)
+      } catch (err) {
+        console.log(err)
+        
+        return err
+      } finally {
+        setLoading(false)
       }
-  
-      getProduct()
-    }, [])
+    }
+
+    getProduct()
+  }, [])
 
   return loading 
     ? 
-      <Flex width="100%" display="flex" justifyContent="center" height="100vh" alignItems="center">
-        <Spinner size="xl"  borderWidth="4px" /> 
+      <Flex width="100%" justifyContent="center" height="100vh" alignItems="center">
+        <Spinner size="xl"  borderWidth="4px" color="#3E92CC" /> 
       </Flex>
     :
-      <Flex flexWrap="wrap" flexDirection="column" alignItems="center" color="black" padding="25px" marginY="20px" gap="2" width="100%">
-        <Box width="100%" display="flex" alignItems="center" justifyContent="flex-start">
-          <NavLink to="/">
-            <Button>
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        color="#F4F4F9"
+        padding="25px"
+        gap="6"
+        width="100%"
+        maxWidth="1200px"
+        mx="auto"
+      >
+        <Box width="100%" display="flex" justifyContent="flex-start">
+          <NavLink to="/" style={{ textDecoration: "none" }}>
+            <Button
+              background="#13293D"
+              color="#3E92CC"
+              borderRadius="full"
+              borderWidth="1px solid"
+              borderColor="whiteAlpha.200"
+              _hover={{ background: "#3E92CC", color: "white" }}
+            >
               <BsArrowLeft />
               Back
               </Button>
           </NavLink>
         </Box>
-        <Image src={product?.image} width="300px" />
-        <Heading>{product?.name}</Heading>
-        <Box display="flex" alignItems="center" justifyContent="flex-start" width="100%">
-          <Text alignSelf="flex-start" fontWeight="700" marginRight="5px">Prepare minutes:</Text>
-          <Text>{product?.prepTimeMinutes} mins</Text>
-        </Box>
-        <Box display="flex" alignItems="center" justifyContent="flex-start" width="100%">
-          <Text alignSelf="flex-start" fontWeight="700" marginRight="5px">Cook time minutes:</Text>
-          <Text>{product?.cookTimeMinutes} mins</Text>
-        </Box>
-        <Box display="flex" alignItems="center" justifyContent="flex-start" width="100%" flexDirection="column">
-          <Text alignSelf="flex-start" fontWeight="700" marginRight="5px">Ingredients:</Text>
-          <List.Root as="ol" gap="2" paddingX="15px" alignSelf="flex-start" marginTop="10px">
-          {product?.ingredients.map((item) => {
-            return <List.Item key={item} textAlign="left" _marker={{ color: "black" }}>{item}</List.Item>
-          })}
-        </List.Root>
-        </Box>
-        <Box display="flex" justifyContent="flex-start" width="100%">
-          <Text alignSelf="flex-start" fontWeight="700" marginRight="5px">Meal type:</Text>
-          {product?.mealType.map((item) => (
-            <Tag.Root marginRight="5px" background="white" color="black">
-              <Tag.Label>{item}</Tag.Label>
-            </Tag.Root>
-          ))}
-        </Box>
-        <Text alignSelf="flex-start" fontWeight="700">Steps:</Text>
-        <List.Root as="ol" gap="2" paddingX="15px" alignSelf="flex-start">
-          {product?.instructions.map((item) => {
-            return <List.Item key={item} textAlign="left" _marker={{ color: "black" }}>{item}</List.Item>
-          })}
-        </List.Root>
+
+        <Grid templateColumns={{ base: "1fr", md: "1fr 1.5fr" }} gap="10" width="100%">
+          <GridItem>
+            <Stack gap="5" position={{ md: "sticky" }} top="20px">
+              <Image
+                src={product?.image}
+                alt={product?.name}
+                width="100%"
+                maxH="400px"
+                objectFit="cover"
+                borderRadius="2xl"
+                boxShadow="xl"
+              />
+
+              <Heading as="h1" size="2xl" color="white" textAlign="left">
+                {product?.name}
+              </Heading>
+
+              <Flex gap="4" bg="#13293D" p="4" borderRadius="xl" border="1px solid" borderColor="whiteAlpha.100">
+                <Flex align="center" gap="2" flex="1">
+                  <BsClock color="#3E92CC" size="18px" />
+                  <Box>
+                    <Text fontSize="xs" color="gray.400">Prep Time</Text>
+                    <Text fontWeight="bold" fontSize="sm">{product?.prepTimeMinutes} mins</Text>
+                  </Box>
+                </Flex>
+
+                <Flex align="center" gap="2" flex="1">
+                  <BsClock color="#3E92CC" size="18px" />
+                  <Box>
+                    <Text fontSize="xs" color="gray.400">Cook Time</Text>
+                    <Text fontWeight="bold" fontSize="sm">{product?.cookTimeMinutes} mins</Text>
+                  </Box>
+                </Flex>
+              </Flex>
+
+              <Flex align="center" gap="2" flexWrap="wrap">
+                <Text fontSize="sm" fontWeight="700" color="gray.400">Meal type:</Text>
+                {product?.mealType.map((item) => (
+                  <Badge key={item} bg="#3E92CC" color="white" borderRadius="full" px="3" py="0.5" textTransform="lowercase">
+                    {item}
+                  </Badge>
+                ))} 
+              </Flex>
+            </Stack>
+          </GridItem>
+
+          <GridItem bg="#13293D" p={{ base: "5", md: "8" }} borderRadius="2xl" border="1px solid" borderColor="whiteAlpha.100">
+            <Stack gap="8">
+              <Box>
+                <Heading as="h3" size="md" color="#3E92CC" mb="4" display="flex" alignItems="center" gap="2">
+                  <BsBook /> Ingredients
+                </Heading>
+
+                <List.Root as="ul" gap="2" paddingLeft="20px">
+                  {product?.ingredients.map((item) => {
+                    return <List.Item key={item} textAlign="left" color="gray.200" fontSize="md">{item}</List.Item>
+                  })}
+                </List.Root>
+              </Box>
+
+              <Box>
+                <Heading as="h3" size="md" color="#3E92CC" mb="4">
+                  Recipe Steps
+                </Heading>
+
+                <List.Root as="ol" gap="4" paddingLeft="20px">
+                  {product?.instructions.map((item, index) => (
+                    <List.Item key={item} textAlign="left"color="gray.200" fontSize="md" _marker={{ color: "#3E92CC", fontWeight: "bold" }}>
+                        {item}
+                    </List.Item>
+                  ))}
+                </List.Root>
+              </Box>
+
+            </Stack>
+          </GridItem>
+
+        </Grid>        
       </Flex>
 }
 

@@ -16,7 +16,6 @@ const Pagination = ({
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
 
-  console.log(currentPage)
 
   return (
     <Flex width="100%" justifyContent="center" my="40px">
@@ -45,8 +44,8 @@ const Pagination = ({
               minW="45px"
               height="45px"
               borderColor="#2A4747"
-              bg={isActive ? "#3E92CC" : "white"}
-              color={isActive ? "white" : "#13293D"}
+              bg={isActive ? "#3E92CC" : "#2A628F"}
+              color="white"
               fontWeight={isActive ? "bold" : "normal"}
               pointerEvents={isActive ? "none" : "auto"}
               _hover={{
