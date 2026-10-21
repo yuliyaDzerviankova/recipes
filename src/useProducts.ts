@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react"
 import type { Product } from "./models"
 
+const ITEMS_PER_PAGE = 12
+
 const useProducts = () => {
     const [products, setProducts] = useState<Product[]>([])
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [total, setTotal] = useState(0)
     const [loading, setLoading] = useState(false)
     const [search, setSearch] = useState("")
   
@@ -11,11 +15,16 @@ const useProducts = () => {
       const getProducts = async () => {
         try {
           setLoading(true)
-          const response = await fetch("https://dummyjson.com/recipes?sortBy=name&order=asc")
+
+          const skip = (currentPage - 1) * ITEMS_PER_PAGE
+
+          const response = await fetch(`https://dummyjson.com/recipes?limit=${ITEMS_PER_PAGE}&skip=${skip}&sortBy=name&order=asc`)
           if (!response.ok) throw new Error("Failed to fetch")
   
           const data = await response.json()
+
           setProducts(data.recipes)
+          setTotal(data.total)
           setFilteredProducts(data.recipes)
         } catch (err) {
           console.log(err)
@@ -27,7 +36,14 @@ const useProducts = () => {
       }
   
       getProducts()
-    }, [])
+    }, [currentPage])
+  
+    const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
+    
+    const handlePageChange = (pageNumber: number) => {
+      setCurrentPage(pageNumber)
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
 
   const searchItems = async () => {
     const searchItem = search.toLowerCase()
@@ -92,6 +108,10 @@ const useProducts = () => {
       searchItems,
       selectTag,
       selectMealType,
+      totalPages,
+      handlePageChange,
+      currentPage,
+      setCurrentPage,
     }
 }
 

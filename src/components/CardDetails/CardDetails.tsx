@@ -1,5 +1,5 @@
 import { NavLink, useParams } from "react-router-dom"
-import type { Product } from "../../../models"
+import type { Product } from "../../models"
 import { Flex, Text, Image, List, Heading, Spinner, Button, Box, Tag } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { BsArrowLeft } from "react-icons/bs"

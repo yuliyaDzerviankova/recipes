@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type KeyboardEvent } from "react"
-import { Flex, Spinner } from "@chakra-ui/react"
-import { Card } from "./components/common"
+import { Box, Flex, SimpleGrid, Spinner } from "@chakra-ui/react"
+import { Card, Pagination } from "./components"
 import { useProducts } from "./useProducts"
 import { Search } from "./components"
 import { Filter } from "./components/Filter/Filter"
@@ -17,14 +17,22 @@ function App() {
     searchItems,
     setFilteredProducts,
     selectMealType,
-    selectTag
+    selectTag,
+    totalPages,
+    handlePageChange,
+    currentPage,
+    setCurrentPage,
   } = useProducts()
 
-  const handleOnChange = (event: ChangeEvent<HTMLDivElement, Element>) => setSearch((event.target as HTMLInputElement).value)
+  const handleOnChange = (event: ChangeEvent<HTMLInputElement, Element>) => {
+    setSearch((event.target as HTMLInputElement).value)
+    setCurrentPage(1)
+  }
 
   const clearSearch = () => {
     setSearch("")
     setFilteredProducts(products)
+    setCurrentPage(1)
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -57,7 +65,14 @@ function App() {
   
   
   return (
-    <Flex flex="1" justifyContent="center" alignItems={loading ? "flex-start" : "center"} width="100%" flexWrap="wrap">
+    <Flex
+      flexDirection="column"
+      width="100%"
+      maxW="1200px"
+      mx="auto"
+      p="5"
+      gap="6"
+    >
       <Search
         clearSearch={clearSearch}
         disabled={loading}
@@ -77,17 +92,31 @@ function App() {
         />
       )}
       <Flex>
-      {loading 
-        ? 
-          <Spinner size="xl"  borderWidth="4px" /> 
-        :
-          <Flex flexDirection="row" flex="1" width="100%" flexWrap="wrap" justifyContent="space-between">
-            {filteredProducts.map(item => (
-              <Card item={item} key={item.id} />
-            ))}
-          </Flex>
-      }
+      <Box width="100%" flex="1" display="flex" justifyContent="center">
+        {loading
+          ? 
+            <Flex width="100%" height="200px" justifyContent="center" align="center">
+              <Spinner size="xl"  borderWidth="4px" />
+            </Flex>
+          :
+            <SimpleGrid
+              columns={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }}
+              gap="20px"
+              width="100%"
+            >
+              {filteredProducts.map(item => (
+                <Card item={item} key={item.id} />
+              ))}
+            </SimpleGrid>
+        }
+      </Box>
       </Flex>
+      
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
       
     </Flex>
   )

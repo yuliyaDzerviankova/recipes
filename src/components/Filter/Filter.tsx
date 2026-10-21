@@ -41,8 +41,8 @@ const Filter = ({ handleDifficultyChange, handleRateChange, selectTag, selectMea
     })
 
   return (
-    <Box width="100%" textAlign="left" margin="20px" display="flex">
-      <Box marginRight="30px" background="#13293D" borderRadius="5px" padding="15px" color="white">
+    <Box width="100%" textAlign="left" margin="20px" display="flex" flexWrap="wrap" gap="6">
+      <Box background="#13293D" borderRadius="5px" padding="15px" color="white">
         <Text marginBottom="10px">Difficulty:</Text>
         <RadioGroup.Root>
           <RadioGroup.Item key={Difficulty.EASY} value={Difficulty.EASY} marginRight="20px" onChange={handleDifficultyChange}>
@@ -58,7 +58,7 @@ const Filter = ({ handleDifficultyChange, handleRateChange, selectTag, selectMea
           </RadioGroup.Item>
         </RadioGroup.Root>
       </Box>
-      <Box background="#13293D" borderRadius="5px" padding="15px" color="white" marginRight="30px">
+      <Box background="#13293D" borderRadius="5px" padding="15px" color="white">
         <Text marginBottom="10px">Rate:</Text>
         <RadioGroup.Root>
           <RadioGroup.Item key="less 4.7" value="less 4.7" marginRight="20px" onChange={handleRateChange}>
@@ -74,7 +74,7 @@ const Filter = ({ handleDifficultyChange, handleRateChange, selectTag, selectMea
           </RadioGroup.Item>
         </RadioGroup.Root>
       </Box>
-      <Box background="#13293D" borderRadius="5px" padding="15px" color="white" width="200px" marginRight="30px">
+      <Box background="#13293D" borderRadius="5px" padding="15px" color="white" width="200px">
         <Select.Root collection={collection} onValueChange={selectTag} value={tag}>
           <Select.HiddenSelect />
           <Select.Label>Tags:</Select.Label>
