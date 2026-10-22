@@ -1,8 +1,12 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["react", "typescript", "oxc"],
+  "categories": {
+    "correctness": "warn",
+  },
   "rules": {
     "react/rules-of-hooks": "error",
+    "eslint/no-unused-vars": "warn",
     "react/only-export-components": ["warn", { "allowConstantExport": true }]
   }
 }

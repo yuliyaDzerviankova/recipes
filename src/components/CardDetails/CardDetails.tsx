@@ -1,6 +1,6 @@
 import { NavLink, useParams } from "react-router-dom"
 import type { Product } from "../../models"
-import { Flex, Text, Image, List, Heading, Spinner, Button, Box, Tag, Grid, GridItem, Stack, Badge } from "@chakra-ui/react"
+import { Flex, Text, Image, List, Heading, Spinner, Button, Box, Grid, GridItem, Stack, Badge, SimpleGrid } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { BsArrowLeft, BsBook, BsClock } from "react-icons/bs"
 
@@ -100,6 +100,23 @@ const CardDetails = ({}: Props) => {
                 </Flex>
               </Flex>
 
+              <SimpleGrid columns={2} gap="3" width="100%">
+                <Box bg="#13293D" p="3" borderRadius="xl" border="1px solid" borderColor="whiteAlpha.100" textAlign="center">
+                  <Text fontSize="xs" color="gray.400" mb="0.5">Calories</Text>
+                  
+                  <Text fontWeight="bold" fontSize="md" color="#3E92CC">
+                    {product?.caloriesPerServing} <Text as="span" fontSize="xs" fontWeight="normal" color="white">kcal</Text>
+                  </Text>
+                </Box>
+
+                <Box bg="#13293D" p="3" borderRadius="xl" border="1px solid" borderColor="whiteAlpha.100" textAlign="center">
+                  <Text fontSize="xs" color="gray.400" mb="0.5">Servings</Text>
+                  <Text fontWeight="bold" fontSize="md" color="#3E92CC">
+                    {product?.servings} <Text as="span" fontSize="xs" fontWeight="normal" color="white">pers</Text>
+                  </Text>
+                </Box>
+              </SimpleGrid>
+
               <Flex align="center" gap="2" flexWrap="wrap">
                 <Text fontSize="sm" fontWeight="700" color="gray.400">Meal type:</Text>
                 {product?.mealType.map((item) => (
@@ -131,7 +148,7 @@ const CardDetails = ({}: Props) => {
                 </Heading>
 
                 <List.Root as="ol" gap="4" paddingLeft="20px">
-                  {product?.instructions.map((item, index) => (
+                  {product?.instructions.map((item) => (
                     <List.Item key={item} textAlign="left"color="gray.200" fontSize="md" _marker={{ color: "#3E92CC", fontWeight: "bold" }}>
                         {item}
                     </List.Item>

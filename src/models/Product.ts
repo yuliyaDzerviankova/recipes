@@ -7,6 +7,7 @@ export type Product = {
   instructions: []
   difficulty: Difficulty
   caloriesPerServing: number
+  servings: number
   cookTimeMinutes: number
   image: string
   prepTimeMinutes: number
