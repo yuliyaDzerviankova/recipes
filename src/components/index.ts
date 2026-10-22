@@ -8,7 +8,7 @@ export * from "./Filter"
 
 export * from "./Pagination"
 
-export * from "./AddRecipeModal"
+export * from "./RecipeModalForm"
 
 export * from "./InstructionsInput"
 

@@ -3,7 +3,7 @@ import type { Product } from "../../models"
 import { Flex, Text, Image, List, Heading, Spinner, Button, Box, Grid, GridItem, Stack, Badge, SimpleGrid } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { BsArrowLeft, BsBook, BsClock } from "react-icons/bs"
-
+import { RecipeModalForm } from "../RecipeModalForm"
 type Props = {}
 
 const CardDetails = ({}: Props) => {
@@ -49,7 +49,7 @@ const CardDetails = ({}: Props) => {
         maxWidth="1200px"
         mx="auto"
       >
-        <Box width="100%" display="flex" justifyContent="flex-start">
+        <Box width="100%" display="flex" justifyContent="space-between">
           <NavLink to="/" style={{ textDecoration: "none" }}>
             <Button
               background="#13293D"
@@ -63,6 +63,8 @@ const CardDetails = ({}: Props) => {
               Back
               </Button>
           </NavLink>
+
+          <RecipeModalForm buttonName="Edit" product={product} />
         </Box>
 
         <Grid templateColumns={{ base: "1fr", md: "1fr 1.5fr" }} gap="10" width="100%">

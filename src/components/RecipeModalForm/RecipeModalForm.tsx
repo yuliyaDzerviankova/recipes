@@ -1,4 +1,4 @@
-import { Button, CloseButton, Dialog, Field, Group, Input, InputGroup, Portal, Tag, VStack } from "@chakra-ui/react"
+import { Button, CloseButton, Dialog, Field, Group, Input, Portal, Tag, VStack } from "@chakra-ui/react"
 import React, { useState } from "react"
 import { BsPlusLg } from "react-icons/bs"
 import { InstructionsInput } from "../InstructionsInput"
@@ -7,9 +7,10 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LuX } from "react-icons/lu"
 import { NumberInput } from "../NumberInput"
+import type { Product } from "../../models"
 
 const recipeSchema = z.object({
-  title: z.string().min(3, "Name should be more than 3 symbols"),
+  name: z.string().min(3, "Name should be more than 3 symbols"),
   ingredients: z.array(z.string()),
   instructions: z.array(z.string()),
   prepTimeMinutes: z.number("Set time").min(0, "Should be positive"),
@@ -19,41 +20,66 @@ const recipeSchema = z.object({
 
 type RecipeFormValues = z.infer<typeof recipeSchema>
 
-const AddRecipeModal = () => {
+type Props = {
+  buttonName: string
+  product?: Product
+}
+
+const RecipeModalForm = ({ buttonName, product }: Props) => {
   const [ingredientText, setIngredientText] = useState("")
+
   const {
     control,
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
+    getValues,
     reset
   } = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeSchema),
     defaultValues: {
-      title: "",
-      prepTimeMinutes: undefined,
-      cookTimeMinutes: undefined,
-      caloriesPerServing: undefined,
-      ingredients: [],
-      instructions: [""]
+      name: product?.name || "",
+      prepTimeMinutes: product?.prepTimeMinutes || undefined,
+      cookTimeMinutes: product?.cookTimeMinutes || undefined,
+      caloriesPerServing: product?.caloriesPerServing || undefined,
+      ingredients: product?.ingredients || [],
+      instructions: product?.instructions || [""]
     }
   })
+
+  console.log(getValues())
 
   const onSubmit = async (data: RecipeFormValues) => {
     console.log("JSON: ", data)
 
-    try {
-      const response = await fetch("https://dummyjson.com//recipes/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data })
-      })
-      .then(res => res.json())
-      .then(console.log)
+    if (buttonName === "Add") {
+      try {
+        const response = await fetch("https://dummyjson.com//recipes/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data })
+        })
+        .then(res => res.json())
+        .then(console.log)
 
-      await console.log(response)
-    } catch (error) {
-      console.log(error)
+        await console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      try {
+        const response = await fetch(`https://dummyjson.com//recipes/${product.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data })
+        })
+        .then(res => res.json())
+        .then(console.log)
+
+        await console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     reset()
@@ -70,7 +96,7 @@ const AddRecipeModal = () => {
           _hover={{ background: "#3E92CC", color: "white" }}
         >
           <BsPlusLg />
-          Add Recipe
+          {buttonName} Recipe
         </Button>
       </Dialog.Trigger>
       <Portal>
@@ -86,17 +112,17 @@ const AddRecipeModal = () => {
             <Dialog.Body flex="1" overflow="auto" p="6" pr="4">
               <VStack gap="6">
 
-                <Field.Root invalid={!!errors.title}>
+                <Field.Root invalid={!!errors.name}>
                   <Field.Label color="gray.400" fontSize="sm" fontWeight="600">
                     Recipe Title
                   </Field.Label>
                   <Input
-                    {...register("title")}
+                    {...register("name")}
                     borderRadius="xl"
                     color="#13293D"
-                    placeholder="Enter title"
+                    placeholder="Enter name"
                   />
-                  <Field.ErrorText>{errors.title?.message}</Field.ErrorText>
+                  <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
                 </Field.Root>
 
                 <Field.Root invalid={!!errors.ingredients}>
@@ -186,86 +212,32 @@ const AddRecipeModal = () => {
                   />
                 </Field.Root>
 
-                <Field.Root required invalid={!!errors.prepTimeMinutes}>
-                  <Field.Label>
-                    Prep Time <Field.RequiredIndicator />
-                  </Field.Label>
-                  <InputGroup endElement="mins" width="100%">
-                    <Input
-                      {...register("prepTimeMinutes", { valueAsNumber: true })}
-                      placeholder="Enter prep time"
-                      type="number"
-                      bg="white"
-                      color="#13293D"
-                      borderRadius="xl"
-                      min={0}
-                    />
-                  </InputGroup>
-                  <Field.ErrorText>{errors.prepTimeMinutes?.message}</Field.ErrorText>
-                </Field.Root>
-
-                {/* <NumberInput
+                <NumberInput
                   endElement="mins"
                   title="Prep Time"
                   errorText={errors.prepTimeMinutes?.message}
                   errors={!!errors.prepTimeMinutes}
-                  {...register("prepTimeMinutes")}
+                  {...register("prepTimeMinutes", { valueAsNumber: true })}
                   placeholder="Enter prep time"
-                /> */}
+                />
 
-                <Field.Root required invalid={!!errors.cookTimeMinutes}>
-                  <Field.Label>
-                    Cook Time <Field.RequiredIndicator />
-                  </Field.Label>
-                  <InputGroup endElement="mins" width="100%">
-                    <Input
-                      {...register("cookTimeMinutes", { valueAsNumber: true })}
-                      placeholder="Enter cook time"
-                      type="number"
-                      bg="white"
-                      color="#13293D"
-                      borderRadius="xl"
-                      min={0}
-                    />
-                  </InputGroup>
-                  <Field.ErrorText>{errors.cookTimeMinutes?.message}</Field.ErrorText>
-                </Field.Root>
-
-                {/* <NumberInput
+                <NumberInput
                   endElement="mins"
                   title="Cook Time"
                   errorText={errors.cookTimeMinutes?.message}
                   errors={!!errors.cookTimeMinutes}
-                  {...register("cookTimeMinutes")}
+                  {...register("cookTimeMinutes", { valueAsNumber: true })}
                   placeholder="Enter cook time"
-                /> */}
+                />
 
-                <Field.Root required invalid={!!errors.caloriesPerServing}>
-                  <Field.Label>
-                    Calories <Field.RequiredIndicator />
-                  </Field.Label>
-                  <InputGroup endElement="mins" width="100%">
-                    <Input
-                      {...register("caloriesPerServing", { valueAsNumber: true })}
-                      placeholder="Enter calories"
-                      type="number"
-                      bg="white"
-                      color="#13293D"
-                      borderRadius="xl"
-                      min={0}
-                    />
-                  </InputGroup>
-                  <Field.ErrorText>{errors.caloriesPerServing?.message}</Field.ErrorText>
-                </Field.Root>
-
-                {/* <NumberInput
+                <NumberInput
                   endElement="cals"
                   title="Calories"
                   errorText={errors.caloriesPerServing?.message}
                   errors={!!errors.caloriesPerServing}
-                  {...register("caloriesPerServing")}
+                  {...register("caloriesPerServing", { valueAsNumber: true })}
                   placeholder="Enter calories"
-                /> */}
+                />
               </VStack>
             </Dialog.Body>
             <Dialog.Footer borderTop="1px solid" borderColor="gray">
@@ -306,4 +278,4 @@ const AddRecipeModal = () => {
   )
 }
 
-export { AddRecipeModal }
+export { RecipeModalForm }

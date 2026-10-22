@@ -1,14 +1,12 @@
 import { useState, type ChangeEvent, type KeyboardEvent } from "react"
-import { Box, Button, Flex, SimpleGrid, Spinner, useDisclosure } from "@chakra-ui/react"
-import { AddRecipeModal, Card, Pagination } from "./components"
+import { Box, Flex, SimpleGrid, Spinner } from "@chakra-ui/react"
+import { Card, Pagination, RecipeModalForm } from "./components"
 import { useProducts } from "./useProducts"
 import { Search } from "./components"
 import { Filter } from "./components/Filter/Filter"
-import { BsPlusLg } from "react-icons/bs"
 
 function App() {
   const [openFilter, setOpenFilter] = useState(false)
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
     filteredProducts,
@@ -95,7 +93,7 @@ function App() {
       )}
 
       <Flex width="100%" justify="flex-end">
-        <AddRecipeModal />
+        <RecipeModalForm buttonName="Add" />
       </Flex>
 
       <Flex>

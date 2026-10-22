@@ -1,6 +1,7 @@
-import { Field, Input, InputGroup } from "@chakra-ui/react"
+import { Field, Input, InputGroup, type InputProps } from "@chakra-ui/react"
+import { forwardRef } from "react"
 
-type Props = {
+type Props = Omit<InputProps, "title" | "placeholder"> & {
   title: string
   errors: boolean
   errorText?: string
@@ -8,14 +9,17 @@ type Props = {
   placeholder: string
 }
 
-const NumberInput = ({ title, errors, errorText, endElement, placeholder }: Props) => {
+const NumberInput = forwardRef<HTMLInputElement, Props>(
+({ title, errors, errorText, endElement, placeholder, ...rest }: Props, ref) => {
   return (
-    <Field.Root required invalid={!!errors}>
+    <Field.Root required invalid={errors}>
       <Field.Label>
         {title} <Field.RequiredIndicator />
       </Field.Label>
       <InputGroup endElement={endElement} width="100%">
         <Input
+          ref={ref}
+          {...rest}
           placeholder={placeholder}
           type="number"
           bg="white"
@@ -27,6 +31,8 @@ const NumberInput = ({ title, errors, errorText, endElement, placeholder }: Prop
       <Field.ErrorText>{errorText}</Field.ErrorText>
     </Field.Root>
   )
-}
+})
+
+NumberInput.displayName = "NumberInput"
 
 export { NumberInput }
